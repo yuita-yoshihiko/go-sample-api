@@ -1,0 +1,37 @@
+services:
+  app:
+    image: go-sample-api-dev
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./.env-sample
+    networks:
+      - go-sample-api-network
+    volumes:
+      - ./:/go/src/github.com/yuita-yoshihiko/go-sample-api/:delegated
+    depends_on:
+      - db
+    working_dir: /go/src/github.com/yuita-yoshihiko/go-sample-api
+    command: go tool air
+    ports:
+      - '8088:80'
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=go-sample-api_local
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - psql_data:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+    networks:
+      - go-sample-api-network
+
+volumes:
+  psql_data:
+
+networks:
+  go-sample-api-network:
