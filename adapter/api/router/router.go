@@ -19,6 +19,7 @@ func SetupRoutes(dbutil db.DBUtils) *chi.Mux {
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.Logger)
 		setupUserRoutes(r, dbutil)
+		setupPostRoutes(r, dbutil)
 	})
 
 	return r
@@ -30,4 +31,17 @@ func setupUserRoutes(r chi.Router, dbutil db.DBUtils) {
 	)
 	handler := api.NewUserApi(userUseCase)
 	r.Get("/users/{id}", handler.Fetch)
+	r.Get("/users/{id}/posts", handler.FetchWithPosts)
+	r.Post("/users", handler.Create)
+	r.Put("/users/{id}", handler.Update)
+	r.Delete("/users/{id}", handler.Delete)
+}
+
+func setupPostRoutes(r chi.Router, dbutil db.DBUtils) {
+	postUseCase := usecase.NewPostUseCase(
+		database.NewPostRepository(dbutil),
+	)
+	handler := api.NewPostApi(postUseCase)
+	r.Get("/posts/users/{user_id}", handler.FetchByUserID)
+	r.Get("/posts/users/{user_id}/comments", handler.FetchByUserIDWithComments)
 }
