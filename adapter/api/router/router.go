@@ -20,14 +20,8 @@ func SetupRoutes(dbutil db.DBUtils) *chi.Mux {
 		r.Use(middleware.Logger)
 		setupUserRoutes(r, dbutil)
 	})
-	setupHealthRoutes(r)
 
 	return r
-}
-
-func setupHealthRoutes(r chi.Router) {
-	healthApi := api.NewHealthApi()
-	r.Get("/health", healthApi.FetchHealth)
 }
 
 func setupUserRoutes(r chi.Router, dbutil db.DBUtils) {
