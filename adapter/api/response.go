@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	ErrFailedToFetch           = map[string]string{"error": "failed to fetch data"}
-	ErrFailedToPost            = map[string]string{"error": "failed to post data"}
-	ErrInvalidRequest          = map[string]string{"error": "invalid request body"}
+	ErrFailedToFetch  = map[string]string{"error": "failed to fetch data"}
+	ErrFailedToPost   = map[string]string{"error": "failed to post data"}
+	ErrInvalidRequest = map[string]string{"error": "invalid request body"}
 )
 
 func WriteJSON(w http.ResponseWriter, status int, v any) {
