@@ -7,14 +7,19 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/yuita-yoshihiko/go-sample-api/adapter/api"
+	"github.com/yuita-yoshihiko/go-sample-api/adapter/database"
+	"github.com/yuita-yoshihiko/go-sample-api/infrastructure/db"
+	"github.com/yuita-yoshihiko/go-sample-api/usecase"
+	"github.com/yuita-yoshihiko/go-sample-api/usecase/converter"
 )
 
-func NewRouter() *chi.Mux {
+func SetupRoutes(dbutil db.DBUtils, dbManager db.DBManager) *chi.Mux {
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 
 	r := chi.NewRouter()
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.Logger)
+		setupUserRoutes(r, dbutil)
 	})
 	setupHealthRoutes(r)
 
@@ -24,4 +29,14 @@ func NewRouter() *chi.Mux {
 func setupHealthRoutes(r chi.Router) {
 	healthApi := api.NewHealthApi()
 	r.Get("/health", healthApi.FetchHealth)
+}
+
+func setupUserRoutes(r chi.Router, dbutil db.DBUtils) {
+	userUseCase := usecase.NewUserUseCase(
+		dbutil,
+		database.NewUserRepository(dbutil),
+		converter.NewUserConverter(),
+	)
+	handler := api.NewUserApi(userUseCase)
+	r.Get("/users/{id}", handler.Fetch)
 }
