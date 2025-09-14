@@ -16,17 +16,14 @@ func main() {
 		panic(err)
 	}
 
-	// slogの初期化
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 
 	database, err := db.Init()
 	if err != nil {
 		panic(err)
 	}
-	dbManager := db.NewDBManager(database)
 	dbUtil := db.NewDBUtil(database)
-
-	r := router.SetupRoutes(dbUtil, dbManager)
+	r := router.SetupRoutes(dbUtil)
 
 	if err := http.ListenAndServe(":80", r); err != nil {
 		panic(err)

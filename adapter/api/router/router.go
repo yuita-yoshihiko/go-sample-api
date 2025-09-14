@@ -10,10 +10,9 @@ import (
 	"github.com/yuita-yoshihiko/go-sample-api/adapter/database"
 	"github.com/yuita-yoshihiko/go-sample-api/infrastructure/db"
 	"github.com/yuita-yoshihiko/go-sample-api/usecase"
-	"github.com/yuita-yoshihiko/go-sample-api/usecase/converter"
 )
 
-func SetupRoutes(dbutil db.DBUtils, dbManager db.DBManager) *chi.Mux {
+func SetupRoutes(dbutil db.DBUtils) *chi.Mux {
 	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 
 	r := chi.NewRouter()
@@ -35,7 +34,6 @@ func setupUserRoutes(r chi.Router, dbutil db.DBUtils) {
 	userUseCase := usecase.NewUserUseCase(
 		dbutil,
 		database.NewUserRepository(dbutil),
-		converter.NewUserConverter(),
 	)
 	handler := api.NewUserApi(userUseCase)
 	r.Get("/users/{id}", handler.Fetch)
