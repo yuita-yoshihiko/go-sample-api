@@ -9,6 +9,7 @@ import (
 
 type UserUseCase interface {
 	Fetch(context.Context, int64) (*models.User, error)
+	FetchWithPosts(context.Context, int64) (*models.UserWithPosts, error)
 	Create(context.Context, *models.User) error
 	Update(context.Context, *models.User) error
 	Delete(context.Context, int64) error
@@ -28,6 +29,10 @@ func NewUserUseCase(
 
 func (u *userUseCaseImpl) Fetch(ctx context.Context, id int64) (*models.User, error) {
 	return u.repository.Fetch(ctx, id)
+}
+
+func (u *userUseCaseImpl) FetchWithPosts(ctx context.Context, id int64) (*models.UserWithPosts, error) {
+	return u.repository.FetchWithPosts(ctx, id)
 }
 
 func (u *userUseCaseImpl) Create(ctx context.Context, user *models.User) error {
