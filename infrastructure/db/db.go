@@ -13,10 +13,6 @@ import (
 
 var ErrNotFound = errors.New("record not found")
 
-type txKeyType struct{}
-
-var txKey = txKeyType{}
-
 func Init() (*sql.DB, error) {
 	connection, err := pq.ParseURL(os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -40,41 +36,12 @@ func Init() (*sql.DB, error) {
 	return db, nil
 }
 
-type DBManager interface {
-	DoInTx(ctx context.Context, f func(context.Context) (any, error)) (any, error)
-}
-
-type DBManagerImpl struct {
-	db *sql.DB
-}
-
-func NewDBManager(db *sql.DB) DBManager {
-	return &DBManagerImpl{db: db}
-}
-
-func (m *DBManagerImpl) DoInTx(ctx context.Context, f func(context.Context) (any, error)) (any, error) {
-	tx, err := m.db.BeginTx(ctx, nil)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		_ = tx.Rollback()
-	}()
-	ctx = context.WithValue(ctx, txKey, tx)
-	v, err := f(ctx)
-	if err != nil {
-		return nil, err
-	}
-	if err := tx.Commit(); err != nil {
-		return nil, err
-	}
-	return v, nil
-}
-
 type DBUtils interface {
 	Error(error) error
 
 	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
+	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 }
 
 type dbUtil struct {
