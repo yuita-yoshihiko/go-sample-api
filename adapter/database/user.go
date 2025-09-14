@@ -20,17 +20,13 @@ func NewUserRepository(db db.DBUtils) repository.UserRepository {
 func (r *userRepositoryImpl) Fetch(ctx context.Context, id int64) (*models.User, error) {
 	const query = "SELECT * FROM users WHERE id = $1"
 	var user models.User
-	err := r.db.QueryRowContext(ctx, query, id).Scan(
+	if err := r.db.QueryRowContext(ctx, query, id).Scan(
 		&user.ID,
 		&user.Name,
 		&user.Email,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-	)
-	if err != nil && err == sql.ErrNoRows {
-		return nil, nil
-	}
-	if err != nil {
+	); err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -47,9 +43,6 @@ func (r *userRepositoryImpl) FetchWithPosts(ctx context.Context, id int64) (*mod
 		&user.UpdatedAt,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
 		return nil, err
 	}
 
