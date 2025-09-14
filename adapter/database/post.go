@@ -20,9 +20,6 @@ func NewPostRepository(db db.DBUtils) repository.PostRepository {
 func (r *PostRepositoryImpl) FetchByUserID(ctx context.Context, userID int64) ([]*models.Post, error) {
 	rows, err := r.db.QueryContext(ctx, "SELECT id, user_id, title, content, created_at, updated_at FROM posts WHERE user_id = $1", userID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
 		return nil, err
 	}
 	defer rows.Close()
@@ -31,7 +28,7 @@ func (r *PostRepositoryImpl) FetchByUserID(ctx context.Context, userID int64) ([
 		var p models.Post
 		if err := rows.Scan(&p.ID, &p.UserID, &p.Title, &p.Content, &p.CreatedAt, &p.UpdatedAt); err != nil {
 			if err == sql.ErrNoRows {
-				return nil, nil
+				continue
 			}
 		}
 		post = append(post, &p)
@@ -42,9 +39,6 @@ func (r *PostRepositoryImpl) FetchByUserID(ctx context.Context, userID int64) ([
 func (r *PostRepositoryImpl) FetchByUserIDWithComments(ctx context.Context, userID int64) ([]*models.PostWithComments, error) {
 	rows, err := r.db.QueryContext(ctx, "SELECT id, user_id, title, content, created_at, updated_at FROM posts WHERE user_id = $1", userID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
 		return nil, err
 	}
 	defer rows.Close()
@@ -53,11 +47,11 @@ func (r *PostRepositoryImpl) FetchByUserIDWithComments(ctx context.Context, user
 		var p models.Post
 		if err := rows.Scan(&p.ID, &p.UserID, &p.Title, &p.Content, &p.CreatedAt, &p.UpdatedAt); err != nil {
 			if err == sql.ErrNoRows {
-				return nil, nil
+				continue
 			}
 		}
 
-		commentsRows, err := r.db.QueryContext(ctx, "SELECT id, post_id, user_id, content, created_at, updated_at FROM comments WHERE post_id = $1", p.ID)
+		commentsRows, err := r.db.QueryContext(ctx, "SELECT id, post_id, content, created_at, updated_at FROM comments WHERE post_id = $1", p.ID)
 		if err != nil {
 			if err == sql.ErrNoRows {
 				postsWithComments = append(postsWithComments, &models.PostWithComments{Post: p, Comments: []models.Comment{}})
