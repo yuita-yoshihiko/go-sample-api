@@ -32,7 +32,6 @@ func setupHealthRoutes(r chi.Router) {
 
 func setupUserRoutes(r chi.Router, dbutil db.DBUtils) {
 	userUseCase := usecase.NewUserUseCase(
-		dbutil,
 		database.NewUserRepository(dbutil),
 	)
 	handler := api.NewUserApi(userUseCase)

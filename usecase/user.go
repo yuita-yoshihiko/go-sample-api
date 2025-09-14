@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/yuita-yoshihiko/go-sample-api/infrastructure/db"
 	"github.com/yuita-yoshihiko/go-sample-api/models"
 	"github.com/yuita-yoshihiko/go-sample-api/usecase/repository"
 )
@@ -16,16 +15,13 @@ type UserUseCase interface {
 }
 
 type userUseCaseImpl struct {
-	dbUtils    db.DBUtils
 	repository repository.UserRepository
 }
 
 func NewUserUseCase(
-	du db.DBUtils,
 	r repository.UserRepository,
 ) UserUseCase {
 	return &userUseCaseImpl{
-		dbUtils:    du,
 		repository: r,
 	}
 }
