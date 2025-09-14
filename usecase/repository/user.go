@@ -1,0 +1,11 @@
+package repository
+
+import (
+	"context"
+
+	"github.com/yuita-yoshihiko/go-sample-api/models"
+)
+
+type UserRepository interface {
+	Fetch(ctx context.Context, id int64) (*models.User, error)
+}
