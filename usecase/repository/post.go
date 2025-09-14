@@ -8,4 +8,5 @@ import (
 
 type PostRepository interface {
 	FetchByUserID(ctx context.Context, userID int64) ([]*models.Post, error)
+	FetchByUserIDWithComments(ctx context.Context, userID int64) ([]*models.PostWithComments, error)
 }
