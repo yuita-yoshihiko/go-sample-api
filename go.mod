@@ -10,6 +10,9 @@ tool (
 require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/go-chi/chi/v5 v5.2.3
+	github.com/go-testfixtures/testfixtures/v3 v3.18.0
+	github.com/google/go-cmp v0.7.0
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.7
 )
 
@@ -31,6 +34,7 @@ require (
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
+	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/godror/godror v0.40.4 // indirect
 	github.com/godror/knownpb v0.1.1 // indirect
 	github.com/gohugoio/hugo v0.147.6 // indirect
@@ -60,6 +64,7 @@ require (
 	github.com/tdewolff/parse/v2 v2.8.3 // indirect
 	golang.org/x/crypto v0.41.0 // indirect
 	golang.org/x/exp v0.0.0-20250819193227-8b4c13bb791b // indirect
+	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/sys v0.35.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
