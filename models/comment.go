@@ -4,11 +4,11 @@ import (
 	"time"
 )
 
-// ユーザー情報
-type User struct {
+// コメント情報
+type Comment struct {
 	ID        int64     `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
+	PostID    int64     `json:"post_id"`
+	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
