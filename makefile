@@ -17,6 +17,9 @@ migrate/down:
 	sleep 5
 	go tool sql-migrate down --env="local"
 
+db-seed:
+	docker compose exec -T db sh -c "psql -v ON_ERROR_STOP=1 postgres://postgres:password@db:5432/go-sample-api_local?sslmode=disable" < ./initdb/initdb.sql
+
 # テスト用DBコンテナ立ち上げ
 test-db-up:
 	docker compose -f docker-compose.testdb.yml up --renew-anon-volumes -d --wait
