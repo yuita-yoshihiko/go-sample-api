@@ -36,7 +36,8 @@ func (u *userUseCaseImpl) FetchWithPosts(ctx context.Context, id int64) (*models
 }
 
 func (u *userUseCaseImpl) Create(ctx context.Context, user *models.User) error {
-	return u.repository.Create(ctx, user)
+	_, err := u.repository.Create(ctx, user)
+	return err
 }
 
 func (u *userUseCaseImpl) Update(ctx context.Context, user *models.User) error {
