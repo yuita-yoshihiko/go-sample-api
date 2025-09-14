@@ -35,3 +35,19 @@ func (r *userRepositoryImpl) Fetch(ctx context.Context, id int64) (*models.User,
 	}
 	return &user, nil
 }
+
+func (r *userRepositoryImpl) Create(ctx context.Context, user *models.User) error {
+	const query = "INSERT INTO users (name, email, created_at, updated_at) VALUES ($1, $2, NOW(), NOW()) RETURNING id, created_at, updated_at"
+	return r.db.QueryRowContext(ctx, query, user.Name, user.Email).Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
+}
+
+func (r *userRepositoryImpl) Update(ctx context.Context, user *models.User) error {
+	const query = "UPDATE users SET name = $1, email = $2, updated_at = NOW() WHERE id = $3 RETURNING updated_at"
+	return r.db.QueryRowContext(ctx, query, user.Name, user.Email, user.ID).Scan(&user.UpdatedAt)
+}
+
+func (r *userRepositoryImpl) Delete(ctx context.Context, id int64) error {
+	const query = "DELETE FROM users WHERE id = $1"
+	_, err := r.db.ExecContext(ctx, query, id)
+	return err
+}
